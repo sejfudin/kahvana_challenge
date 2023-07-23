@@ -8,3 +8,8 @@ export interface PhoneNumber {
     phoneNumbers: PhoneNumber[];
     name?: string;
   }
+
+  export interface CustomError extends Error{
+    status?: number;
+    message: string;
+  }

@@ -2,7 +2,7 @@ import { UserModel } from "../models/userModel";
 import { User } from "../utils/interfaces";
 
 //Add user
-const addUser = async (data: any) => {
+const addUser = async (data: User): Promise<User | null> => {
   const { name, email, phoneNumbers } = data;
 
   const existingUser = await UserModel.findOne({ email });
@@ -20,8 +20,8 @@ const addUser = async (data: any) => {
 };
 
 //Get user by id
-const getUser = async (id: any) => {
-  const user = await UserModel.findById(id);
+const getUser = async (id: string): Promise<User> => {
+  const user: User | null = await UserModel.findById(id);
   if (user) {
     return user;
   } else {
@@ -30,10 +30,10 @@ const getUser = async (id: any) => {
 };
 
 //Update user
-const updateUser = async (id: any, data: any) => {
+const updateUser = async (id: string, data: Partial<User>): Promise<User> => {
   const { name, email, phoneNumbers } = data;
 
-  const user = await UserModel.findByIdAndUpdate(id, {
+  const user: User | null = await UserModel.findByIdAndUpdate(id, {
     name,
     email,
     phoneNumbers,
@@ -46,19 +46,18 @@ const updateUser = async (id: any, data: any) => {
 };
 
 //Delete user
-const deleteUser = async (id: any) => {
-  
-    const user = await UserModel.findByIdAndRemove(id);
-    if (user) {
-      return user;
-    } else {
-      throw new Error("User not found");
-    }
-  };
+const deleteUser = async (id: string): Promise<User> => {
+  const user: User | null = await UserModel.findByIdAndRemove(id);
+  if (user) {
+    return user;
+  } else {
+    throw new Error("User not found");
+  }
+};
 
 export const userService = {
   addUser: addUser,
   getUser: getUser,
   updateUser: updateUser,
-  deleteUser:deleteUser
+  deleteUser: deleteUser,
 };
