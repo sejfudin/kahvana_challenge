@@ -25,3 +25,28 @@ export const getUser = async (req: Request, res: Response) => {
     res.send(user);
   } catch (error) {}
 };
+
+//Update user
+export const updateUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const data = {
+    name: req.body.name,
+    email: req.body.email,
+    phoneNumbers: req.body.phoneNumbers,
+  };
+
+  try {
+    const user = await userService.updateUser(id, data);
+    res.send(user);
+  } catch (error) {}
+};
+
+//Delete user
+export const deleteUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const user = await userService.deleteUser(id);
+    res.send(user);
+  } catch (error) {}
+};
