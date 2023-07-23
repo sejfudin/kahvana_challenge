@@ -1,33 +1,50 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { userService } from "../services/userService";
+import { CustomError, User } from "../utils/interfaces";
 
 //Add user
-export const addUser = async (req: Request, res: Response) => {
+export const addUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { email, name, phoneNumbers } = req.body;
-  const data = {
+  const data: User = {
     name,
     email,
     phoneNumbers,
   };
 
   try {
-    const createdUser = await userService.addUser(data);
+    const createdUser: User | null = await userService.addUser(data);
     res.send(createdUser);
-  } catch (error) {}
+  } catch (error: any) {
+    next({ status: error.status, message: error.message });
+  }
 };
 
 //Get user
-export const getUser = async (req: Request, res: Response) => {
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
     const user = await userService.getUser(id);
     res.send(user);
-  } catch (error) {}
+  } catch (error: any) {
+    next({ status: error.status, message: error.message });
+  }
 };
 
 //Update user
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
   const data = {
     name: req.body.name,
@@ -38,15 +55,23 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const user = await userService.updateUser(id, data);
     res.send(user);
-  } catch (error) {}
+  } catch (error: any) {
+    next({ status: error.status, message: error.message });
+  }
 };
 
 //Delete user
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { id } = req.params;
 
   try {
     const user = await userService.deleteUser(id);
     res.send(user);
-  } catch (error) {}
+  } catch (error: any) {
+    next({ status: error.status, message: error.message });
+  }
 };
