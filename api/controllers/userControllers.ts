@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { userService } from "../services/userService";
-import { CustomError, User } from "../utils/interfaces";
+import { User } from "../utils/interfaces";
 
 //Add user
 export const addUser = async (
@@ -18,6 +18,21 @@ export const addUser = async (
   try {
     const createdUser: User | null = await userService.addUser(data);
     res.send(createdUser);
+  } catch (error: any) {
+    next({ status: error.status, message: error.message });
+  }
+};
+
+//Get all users
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+ 
+  try {
+    const users = await userService.getUsers();
+    res.send(users);
   } catch (error: any) {
     next({ status: error.status, message: error.message });
   }
