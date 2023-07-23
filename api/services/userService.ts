@@ -29,6 +29,16 @@ const getUser = async (id: string): Promise<User> => {
   }
 };
 
+//Get all users
+const getUsers = async (): Promise<User[]> => {
+  const users: User[] = await UserModel.find();
+  if (users.length > 0) {
+    return users;
+  } else {
+    throw new Error("No users found");
+  }
+};
+
 //Update user
 const updateUser = async (id: string, data: Partial<User>): Promise<User> => {
   const { name, email, phoneNumbers } = data;
@@ -58,6 +68,7 @@ const deleteUser = async (id: string): Promise<User> => {
 export const userService = {
   addUser: addUser,
   getUser: getUser,
+  getUsers: getUsers,
   updateUser: updateUser,
   deleteUser: deleteUser,
 };
