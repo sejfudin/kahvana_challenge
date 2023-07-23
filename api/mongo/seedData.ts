@@ -1,7 +1,7 @@
 import { combinedArray } from "../helper";
 import connectDB from "./db";
 import { connection } from "mongoose";
-import {UserModel} from '../models/user';
+import {UserModel} from '../models/userModel';
   
   const seedData = async () => {
     try {
