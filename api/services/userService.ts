@@ -29,7 +29,36 @@ const getUser = async (id: any) => {
   }
 };
 
+//Update user
+const updateUser = async (id: any, data: any) => {
+  const { name, email, phoneNumbers } = data;
+
+  const user = await UserModel.findByIdAndUpdate(id, {
+    name,
+    email,
+    phoneNumbers,
+  });
+  if (user) {
+    return user;
+  } else {
+    throw new Error("User not found");
+  }
+};
+
+//Delete user
+const deleteUser = async (id: any) => {
+  
+    const user = await UserModel.findByIdAndRemove(id);
+    if (user) {
+      return user;
+    } else {
+      throw new Error("User not found");
+    }
+  };
+
 export const userService = {
   addUser: addUser,
   getUser: getUser,
+  updateUser: updateUser,
+  deleteUser:deleteUser
 };

@@ -3,7 +3,7 @@ import { User } from "../utils/interfaces";
 
 const userSchema = new Schema<User>({
     email: { type: String, required: true },
-    phoneNumbers: [Schema.Types.Mixed],
+    phoneNumbers: String,
     name: String,
   });
   
