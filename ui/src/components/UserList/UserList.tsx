@@ -10,6 +10,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  phoneNumbers: string;
 }
 interface UserListProps {
   onEditUser: (userId: string) => void;
