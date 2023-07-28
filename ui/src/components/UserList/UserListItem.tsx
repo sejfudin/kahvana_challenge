@@ -5,18 +5,23 @@ import Button from "@mui/material/Button";
 import { useStyles } from "./styles";
 import EditUserModal from "../UserModal/EditUserModal";
 import { User } from "../../utils/interfaces";
+import { deleteUser, getAllUsers } from "../../services/userService";
 
 interface UserListItemProps {
   user: User;
-  onEditUser: (userId: string) => void;
 }
 
-const UserListItem: React.FC<UserListItemProps> = ({ user, onEditUser }) => {
+const UserListItem: React.FC<UserListItemProps> = ({ user }) => {
   const classes = useStyles();
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
 
   const handleEditUser = () => {
     setIsEditModalOpen(true);
+  };
+
+  const handleDeleteUser = async (id: string) => {
+    await deleteUser(id);
+    await getAllUsers();
   };
 
   return (
@@ -31,7 +36,10 @@ const UserListItem: React.FC<UserListItemProps> = ({ user, onEditUser }) => {
         <Button color="primary" onClick={() => handleEditUser()}>
           Edit
         </Button>
-        <Button color="primary" onClick={() => onEditUser(user._id ?? "")}>
+        <Button
+          color="primary"
+          onClick={() => handleDeleteUser(user._id ?? "")}
+        >
           Delete
         </Button>
       </ListItem>
