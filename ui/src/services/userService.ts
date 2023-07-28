@@ -18,3 +18,12 @@ export const saveUser = async (newUser: User) => {
     console.log(error);
   }
 }
+
+export const updateUser = async (id:string, newData: User) => {
+  try {
+    const { data } = await axios.put<User>(`http://localhost:4000/users/${id}`, newData);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
