@@ -5,17 +5,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { User } from "../../utils/interfaces";
+import { EditUserModalProps, User } from "../../utils/interfaces";
 import { useStyles } from "./styles";
 import { getAllUsers, updateUser } from "../../services/userService";
-
-interface EditUserModalProps {
-  id: string;
-  user: User;
-  open: boolean;
-  onClose: () => void;
-  // onSave: (updatedUser: User) => void;
-}
 
 const EditUserModal: React.FC<EditUserModalProps> = ({
   user,
@@ -53,20 +45,12 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
       phoneNumbers,
     };
     await updateUser(id, newData);
-    const users = await getAllUsers()
+    const users = await getAllUsers();
     onClose();
   };
 
-  const handleClose = () => {
-    onClose(); // Close the modal if "Cancel" button is clicked
-  };
-
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      classes={{ paper: classes.dialog }}
-    >
+    <Dialog open={open} onClose={onClose} classes={{ paper: classes.dialog }}>
       <div className={classes.dialogContent}>
         <DialogTitle>Add New User</DialogTitle>
         <DialogContent>
@@ -99,7 +83,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
           </Box>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button onClick={handleClose} color="secondary">
+          <Button onClick={onClose} color="secondary">
             Cancel
           </Button>
           <Button onClick={handleSave} color="primary">

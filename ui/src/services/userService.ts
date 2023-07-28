@@ -27,3 +27,12 @@ export const updateUser = async (id:string, newData: User) => {
     console.log(error);
   }
 }
+
+export const deleteUser = async (id:string) => {
+  try {
+    const { data } = await axios.delete<Boolean>(`http://localhost:4000/users/${id}`);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}

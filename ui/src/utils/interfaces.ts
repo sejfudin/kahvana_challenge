@@ -13,10 +13,16 @@
     onChange: (event: React.ChangeEvent<unknown>, page: number) => void;
   }
 
-  export interface FormData {
-    name: string;
-    email: string;
-    phoneNumbers: string;
+  export interface AddUserModalProps {
+    open: boolean;
+    onClose: () => void;
+  }
+
+  export interface EditUserModalProps {
+    id: string;
+    user: User;
+    open: boolean;
+    onClose: () => void;
   }
   
   

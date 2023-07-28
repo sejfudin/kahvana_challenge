@@ -9,14 +9,8 @@ import {
   Button,
 } from "@mui/material";
 import { useStyles } from "./styles";
-import { User } from "../../utils/interfaces";
-import axios from "axios";
+import { AddUserModalProps, User } from "../../utils/interfaces";
 import { getAllUsers, saveUser } from "../../services/userService";
-
-interface AddUserModalProps {
-  open: boolean;
-  onClose: () => void;
-}
 
 const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
@@ -49,16 +43,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
     onClose();
   };
 
-  const handleClose = () => {
-    onClose(); // Close the modal if "Cancel" button is clicked
-  };
-
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      classes={{ paper: classes.dialog }}
-    >
+    <Dialog open={open} onClose={onClose} classes={{ paper: classes.dialog }}>
       <div className={classes.dialogContent}>
         <DialogTitle>Add New User</DialogTitle>
         <DialogContent>
@@ -91,7 +77,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
           </Box>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button onClick={handleClose} color="secondary">
+          <Button onClick={onClose} color="secondary">
             Cancel
           </Button>
           <Button onClick={handleSave} color="primary">
