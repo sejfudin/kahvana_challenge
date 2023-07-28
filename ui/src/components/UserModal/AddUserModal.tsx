@@ -11,8 +11,14 @@ import {
 import { useStyles } from "./styles";
 import { AddUserModalProps, User } from "../../utils/interfaces";
 import { getAllUsers, saveUser } from "../../services/userService";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
+const AddUserModal: React.FC<AddUserModalProps> = ({
+  open,
+  onClose,
+  setUsers,
+}) => {
   const classes = useStyles();
 
   const [name, setName] = useState<string>("");
@@ -31,16 +37,30 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
     setPhoneNumbers(e.target.value);
   };
 
+  const clearFields = () => {
+    setName("");
+    setEmail("");
+    setPhoneNumbers("");
+  };
+
   const handleSave = async () => {
-    const newUser: User = {
-      name,
-      email,
-      phoneNumbers,
-    };
-    await saveUser(newUser);
-    const users = await getAllUsers();
-    console.log(users);
-    onClose();
+    try {
+      const newUser: User = {
+        name,
+        email,
+        phoneNumbers,
+      };
+      await saveUser(newUser);
+      const users = await getAllUsers();
+      setUsers(users);
+      clearFields();
+      onClose();
+    } catch (error: any) {
+      clearFields();
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
 
   return (
@@ -77,7 +97,13 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
           </Box>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button onClick={onClose} color="secondary">
+          <Button
+            onClick={() => {
+              onClose();
+              clearFields();
+            }}
+            color="secondary"
+          >
             Cancel
           </Button>
           <Button onClick={handleSave} color="primary">
@@ -85,6 +111,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
           </Button>
         </DialogActions>
       </div>
+      <ToastContainer autoClose={3000} />
     </Dialog>
   );
 };

@@ -8,12 +8,15 @@ import Button from "@mui/material/Button";
 import { EditUserModalProps, User } from "../../utils/interfaces";
 import { useStyles } from "./styles";
 import { getAllUsers, updateUser } from "../../services/userService";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EditUserModal: React.FC<EditUserModalProps> = ({
   user,
   open,
   onClose,
   id,
+  setUsers,
 }) => {
   const classes = useStyles();
 
@@ -39,14 +42,21 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
   };
 
   const handleSave = async () => {
-    const newData: User = {
-      name,
-      email,
-      phoneNumbers,
-    };
-    await updateUser(id, newData);
-    const users = await getAllUsers();
-    onClose();
+    try {
+      const newData: User = {
+        name,
+        email,
+        phoneNumbers,
+      };
+      await updateUser(id, newData);
+      const users = await getAllUsers();
+      setUsers(users);
+      onClose();
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
 
   return (
@@ -91,6 +101,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
           </Button>
         </DialogActions>
       </div>
+      <ToastContainer autoClose={3000} />
     </Dialog>
   );
 };
