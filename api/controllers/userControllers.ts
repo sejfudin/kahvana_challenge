@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { userService } from "../services/userService";
+import { UserQueryParams, userService } from "../services/userService";
 import { User } from "../utils/interfaces";
 
 //Add user
@@ -19,7 +19,7 @@ export const addUser = async (
     const createdUser: User | null = await userService.addUser(data);
     res.send(createdUser);
   } catch (error: any) {
-    next({ status: error.status, message: error.message });
+    next({ message: error.message });
   }
 };
 
@@ -29,9 +29,11 @@ export const getUsers = async (
   res: Response,
   next: NextFunction
 ) => {
- 
   try {
-    const users = await userService.getUsers();
+    // Extract query parameters from req.query object
+    const { query, email, phoneNumber }: UserQueryParams = req.query;
+
+    const users = await userService.getUsers({ query, email, phoneNumber });
     res.send(users);
   } catch (error: any) {
     next({ status: error.status, message: error.message });
@@ -85,8 +87,8 @@ export const deleteUser = async (
 
   try {
     const user = await userService.deleteUser(id);
-    res.send(user);
+    res.send(true);
   } catch (error: any) {
-    next({ status: error.status, message: error.message });
+    res.send(false);
   }
 };
