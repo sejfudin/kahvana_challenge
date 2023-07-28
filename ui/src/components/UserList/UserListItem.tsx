@@ -1,16 +1,10 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
 import { useStyles } from "./styles";
 import EditUserModal from "../UserModal/EditUserModal";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  phoneNumbers: string;
-}
+import { User } from "../../utils/interfaces";
 
 interface UserListItemProps {
   user: User;
@@ -25,30 +19,29 @@ const UserListItem: React.FC<UserListItemProps> = ({ user, onEditUser }) => {
     setIsEditModalOpen(true);
   };
 
-
   return (
     <>
-    <ListItem
-      key={user._id}
-      alignItems="center"
-      className={classes.listItem}
-      style={{ background: "#e1f5fe" }}
-    >
-      <ListItemText primary={`${user.name} - ${user.email}`} />
-      <Button color="primary" onClick={() => handleEditUser()}>
-        Edit
-      </Button>
-      <Button color="primary" onClick={() => onEditUser(user._id)}>
-        Delete
-      </Button>
-    </ListItem>
-    {isEditModalOpen && (
-      <EditUserModal
-      open={isEditModalOpen}
-        user={user}
-        onClose={() => setIsEditModalOpen(false)}
-      />
-    )}
+      <ListItem
+        key={user._id}
+        alignItems="center"
+        className={classes.listItem}
+        style={{ background: "#e1f5fe" }}
+      >
+        <ListItemText primary={`${user.name} - ${user.email}`} />
+        <Button color="primary" onClick={() => handleEditUser()}>
+          Edit
+        </Button>
+        <Button color="primary" onClick={() => onEditUser(user._id ?? "")}>
+          Delete
+        </Button>
+      </ListItem>
+      {isEditModalOpen && (
+        <EditUserModal
+          open={isEditModalOpen}
+          user={user}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
     </>
   );
 };
