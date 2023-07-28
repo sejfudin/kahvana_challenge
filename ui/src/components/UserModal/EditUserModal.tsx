@@ -1,31 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import {Dialog, Box} from '@mui/material';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { User } from '../../utils/interfaces';
-import { useStyles } from "./styles"; 
+import React, { useState, useEffect } from "react";
+import { Dialog, Box } from "@mui/material";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { User } from "../../utils/interfaces";
+import { useStyles } from "./styles";
+import { getAllUsers, updateUser } from "../../services/userService";
 
 interface EditUserModalProps {
+  id: string;
   user: User;
   open: boolean;
   onClose: () => void;
   // onSave: (updatedUser: User) => void;
 }
 
-const EditUserModal: React.FC<EditUserModalProps> = ({ user, open, onClose }) => {
+const EditUserModal: React.FC<EditUserModalProps> = ({
+  user,
+  open,
+  onClose,
+  id,
+}) => {
   const classes = useStyles();
 
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phoneNumbers, setPhoneNumbers] = useState<string>('');
-
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumbers, setPhoneNumbers] = useState<string>("");
 
   useEffect(() => {
-    setName(user.name || '');
-      setEmail(user.email || '');
+    setName(user.name || "");
+    setEmail(user.email || "");
   }, [user]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,8 +46,14 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, open, onClose }) =>
     setPhoneNumbers(e.target.value);
   };
 
-  const handleSave = () => {
-    // onSave({ ...user, name, email });
+  const handleSave = async () => {
+    const newData: User = {
+      name,
+      email,
+      phoneNumbers,
+    };
+    await updateUser(id, newData);
+    const users = await getAllUsers()
     onClose();
   };
 

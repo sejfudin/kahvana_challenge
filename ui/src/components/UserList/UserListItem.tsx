@@ -40,6 +40,7 @@ const UserListItem: React.FC<UserListItemProps> = ({ user, onEditUser }) => {
           open={isEditModalOpen}
           user={user}
           onClose={() => setIsEditModalOpen(false)}
+          id={user._id ?? ""}
         />
       )}
     </>
