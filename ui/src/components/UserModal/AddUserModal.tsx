@@ -11,6 +11,7 @@ import {
 import { useStyles } from "./styles";
 import { User } from "../../utils/interfaces";
 import axios from "axios";
+import { getAllUsers, saveUser } from "../../services/userService";
 
 interface AddUserModalProps {
   open: boolean;
@@ -20,47 +21,32 @@ interface AddUserModalProps {
 const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
   const classes = useStyles();
 
-  const [formData, setFormData] = useState<User>({
-    name: "",
-    email: "",
-    phoneNumbers: "",
-  });
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumbers, setPhoneNumbers] = useState<string>("");
 
-  useEffect(() => {
-    if (open) {
-      // Only reset the form data when the modal is opened
-      if (!formData.name && !formData.email && !formData.phoneNumbers) {
-        setFormData({
-          name: "",
-          email: "",
-          phoneNumbers: "",
-        });
-      }
-    }
-  }, [open]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      
-      ...prevFormData,
-      [name]: value,
-    }));
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
   };
 
-  const saveUser =async (newUser:User)=> {
-    try {
-      await axios.post<User>("http://localhost:5000/users/", newUser)
-    } catch (error) {
-      console.log(error)
-    }
-    
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
 
-  }
+  const handlePhoneNumbersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumbers(e.target.value);
+  };
 
-  const handleSave = () => {
-    saveUser(formData)
-    onClose(); // Close the modal after saving
+  const handleSave = async () => {
+    const newUser: User = {
+      name,
+      email,
+      phoneNumbers,
+    };
+    await saveUser(newUser);
+    const users = await getAllUsers();
+    console.log(users);
+    onClose();
   };
 
   const handleClose = () => {
@@ -81,8 +67,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
               fullWidth
               type="text"
               label="Name"
-              value={formData.name}
-              onChange={handleInputChange}
+              value={name}
+              onChange={handleNameChange}
             />
           </Box>
           <Box className={classes.inputBox}>
@@ -90,8 +76,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
               fullWidth
               type="email"
               label="Email"
-              value={formData.email}
-              onChange={handleInputChange}
+              value={email}
+              onChange={handleEmailChange}
             />
           </Box>
           <Box className={classes.inputBox}>
@@ -99,8 +85,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
               fullWidth
               type="text"
               label="PhoneNumbers"
-              value={formData.phoneNumbers}
-              onChange={handleInputChange}
+              value={phoneNumbers}
+              onChange={handlePhoneNumbersChange}
             />
           </Box>
         </DialogContent>
