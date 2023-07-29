@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Dialog, Box } from "@mui/material";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -17,39 +17,23 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
   onClose,
   id,
   setUsers,
+  searchQuery,
 }) => {
   const classes = useStyles();
 
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phoneNumbers, setPhoneNumbers] = useState<string>("");
+  // Edited user state
+  const [editedUser, setEditedUser] = useState<User>(user);
 
-  useEffect(() => {
-    setName(user.name || "");
-    setEmail(user.email || "");
-  }, [user]);
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
+  // Method that updates changed values for user
+  const handleChange = (field: keyof User, value: string) => {
+    setEditedUser((prevUser) => ({ ...prevUser, [field]: value }));
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePhoneNumbersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumbers(e.target.value);
-  };
-
+  //Save method
   const handleSave = async () => {
     try {
-      const newData: User = {
-        name,
-        email,
-        phoneNumbers,
-      };
-      await updateUser(id, newData);
-      const users = await getAllUsers();
+      await updateUser(id, editedUser);
+      const users = await getAllUsers(searchQuery);
       setUsers(users);
       onClose();
     } catch (error: any) {
@@ -69,8 +53,8 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
               fullWidth
               type="text"
               label="Name"
-              value={name}
-              onChange={handleNameChange}
+              value={editedUser.name}
+              onChange={(e) => handleChange("name", e.target.value)}
             />
           </Box>
           <Box className={classes.inputBox}>
@@ -78,17 +62,17 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
               fullWidth
               type="email"
               label="Email"
-              value={email}
-              onChange={handleEmailChange}
+              value={editedUser.email}
+              onChange={(e) => handleChange("email", e.target.value)}
             />
           </Box>
           <Box className={classes.inputBox}>
             <TextField
               fullWidth
               type="text"
-              label="PhoneNumbers"
-              value={phoneNumbers}
-              onChange={handlePhoneNumbersChange}
+              label="PhoneNumber"
+              value={editedUser.phoneNumber}
+              onChange={(e) => handleChange("phoneNumber", e.target.value)}
             />
           </Box>
         </DialogContent>

@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { List, Pagination, Typography } from "@mui/material";
 import { useStyles } from "./styles";
 import UserListItem from "./UserListItem";
 import { ITEMS_PER_PAGE } from "../../utils/constants";
 import { UserListProps } from "../../utils/interfaces";
 
-const UserList: React.FC<UserListProps> = ({ users, setUsers }) => {
+const UserList: React.FC<UserListProps> = ({
+  users,
+  setUsers,
+  searchQuery,
+}) => {
   const classes = useStyles();
 
   // const [users, setUsers] = useState<User[]>([]);
@@ -18,12 +22,20 @@ const UserList: React.FC<UserListProps> = ({ users, setUsers }) => {
   // Get the users for the current page
   const usersForCurrentPage = users.slice(startIndex, endIndex);
 
+  // Method that swithes pages
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     page: number
   ) => {
     setCurrentPage(page);
   };
+
+  // Set current page on 1 if search is active
+  useEffect(()=>{
+    if(searchQuery.name || searchQuery.email || searchQuery.phoneNumber){
+      setCurrentPage(1)
+    }
+  },[searchQuery])
 
   return (
     <div className={classes.root}>
@@ -34,7 +46,12 @@ const UserList: React.FC<UserListProps> = ({ users, setUsers }) => {
         <>
           <List component="ul">
             {usersForCurrentPage.map((user) => (
-              <UserListItem key={user._id} user={user} setUsers={setUsers} />
+              <UserListItem
+                key={user._id}
+                user={user}
+                setUsers={setUsers}
+                searchQuery={searchQuery}
+              />
             ))}
           </List>
           <div
@@ -48,7 +65,6 @@ const UserList: React.FC<UserListProps> = ({ users, setUsers }) => {
               count={Math.ceil(users.length / ITEMS_PER_PAGE)} // Calculate total number of pages
               page={currentPage}
               onChange={handlePageChange}
-              style={{ marginTop: "16px" }}
             />
           </div>
         </>

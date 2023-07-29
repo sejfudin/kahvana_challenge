@@ -3,8 +3,8 @@ import { User } from "../utils/interfaces";
 
 const userSchema = new Schema<User>({
   email: { type: String, required: true },
-  phoneNumbers: String,
-  name: String,
+  name: { type: String, required: true },
+  phoneNumber: String,
 });
 
 export const UserModel = model<User>("User", userSchema);
