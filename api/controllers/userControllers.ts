@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { userService } from "../services/userService";
-import { User } from "../utils/interfaces";
+import { User, UserQueryParams } from "../utils/interfaces";
 
 //Add user
 export const addUser = async (
@@ -8,18 +8,18 @@ export const addUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, name, phoneNumbers } = req.body;
+  const { email, name, phoneNumber } = req.body;
   const data: User = {
     name,
     email,
-    phoneNumbers,
+    phoneNumber,
   };
 
   try {
     const createdUser: User | null = await userService.addUser(data);
     res.send(createdUser);
   } catch (error: any) {
-    next({ status: error.status, message: error.message });
+    next({ message: error.message });
   }
 };
 
@@ -29,9 +29,11 @@ export const getUsers = async (
   res: Response,
   next: NextFunction
 ) => {
- 
   try {
-    const users = await userService.getUsers();
+    // Extract query parameters from req.query object
+    const { name, email, phoneNumber }: UserQueryParams = req.query;
+
+    const users = await userService.getUsers({ name, email, phoneNumber });
     res.send(users);
   } catch (error: any) {
     next({ status: error.status, message: error.message });
@@ -64,7 +66,7 @@ export const updateUser = async (
   const data = {
     name: req.body.name,
     email: req.body.email,
-    phoneNumbers: req.body.phoneNumbers,
+    phoneNumber: req.body.phoneNumber,
   };
 
   try {
@@ -85,8 +87,8 @@ export const deleteUser = async (
 
   try {
     const user = await userService.deleteUser(id);
-    res.send(user);
+    res.send(true);
   } catch (error: any) {
-    next({ status: error.status, message: error.message });
+    res.send(false);
   }
 };

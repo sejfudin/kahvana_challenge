@@ -2,35 +2,63 @@ import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/system/Box";
-import Link from "@mui/material/Link";
-import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Button from "@mui/material/Button";
-
 import { useStyles } from "./styles";
 import { Container } from "@mui/material";
 import AddUserModal from "../UserModal/AddUserModal";
+import { HeaderProps } from "../../utils/interfaces";
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = ({
+  handleSearchChange,
+  searchQuery,
+  setUsers,
+}) => {
   const classes = useStyles();
 
-  const [isOpen, setIsOpen] = useState(false);
+  // Open or close add user modal
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  // Method that open add user modal
   const handleAddUser = () => {
     setIsOpen(true);
   };
 
   return (
     <Container maxWidth="md">
-      <AddUserModal open={isOpen}
-       onClose={()=>setIsOpen(false)}
+      <AddUserModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        setUsers={setUsers}
+        searchQuery={searchQuery}
       />
       <AppBar color="inherit" elevation={2}>
         <Toolbar>
           <Box>
             <InputBase
-              placeholder="Search users..."
+              placeholder="Search by name"
               inputProps={{ "aria-label": "search" }}
+              name="name"
+              value={searchQuery.name}
+              onChange={handleSearchChange}
+            />
+          </Box>
+          <Box>
+            <InputBase
+              placeholder="Search by email"
+              inputProps={{ "aria-label": "search" }}
+              name="email"
+              value={searchQuery.email}
+              onChange={handleSearchChange}
+            />
+          </Box>
+          <Box>
+            <InputBase
+              placeholder="Search by phone"
+              inputProps={{ "aria-label": "search" }}
+              name="phoneNumber"
+              value={searchQuery.phoneNumber}
+              onChange={handleSearchChange}
             />
           </Box>
 

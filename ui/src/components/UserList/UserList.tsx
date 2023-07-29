@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { List, Pagination, Typography } from "@mui/material";
 import { useStyles } from "./styles";
 import UserListItem from "./UserListItem";
-import { getAllUsers } from "../../services/userService";
-import {ITEMS_PER_PAGE} from '../../utils/constants';
-import { User } from "../../utils/interfaces";
+import { ITEMS_PER_PAGE } from "../../utils/constants";
+import { UserListProps } from "../../utils/interfaces";
 
-interface UserListProps {
-  onEditUser: (userId: string) => void;
-}
-
-const UserList = ({ onEditUser }: UserListProps) => {
+const UserList: React.FC<UserListProps> = ({
+  users,
+  setUsers,
+  searchQuery,
+}) => {
   const classes = useStyles();
 
-  const [users, setUsers] = useState<User[]>([]);
+  // const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   // Calculate the start and end indexes of the current page
@@ -22,6 +21,8 @@ const UserList = ({ onEditUser }: UserListProps) => {
 
   // Get the users for the current page
   const usersForCurrentPage = users.slice(startIndex, endIndex);
+
+  // Method that swithes pages
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     page: number
@@ -29,41 +30,47 @@ const UserList = ({ onEditUser }: UserListProps) => {
     setCurrentPage(page);
   };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await getAllUsers();
-        if (data) {
-          setUsers(data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // Set current page on 1 if search is active
+  useEffect(()=>{
+    if(searchQuery.name || searchQuery.email || searchQuery.phoneNumber){
+      setCurrentPage(1)
+    }
+  },[searchQuery])
 
-    fetchUsers();
-  }, []);
-console.log(usersForCurrentPage)
   return (
     <div className={classes.root}>
       <Typography variant="h5" gutterBottom>
         List of Users
       </Typography>
-      <List component="ul">
-        {usersForCurrentPage.map((user) => (
-          <UserListItem key={user._id} user={user} onEditUser={onEditUser} />
-        ))}
-      </List>
-      <div
-        style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}
-      >
-        <Pagination
-          count={Math.ceil(users.length / ITEMS_PER_PAGE)} // Calculate total number of pages
-          page={currentPage}
-          onChange={handlePageChange}
-          style={{ marginTop: "16px" }}
-        />
-      </div>
+      {users.length > 0 ? (
+        <>
+          <List component="ul">
+            {usersForCurrentPage.map((user) => (
+              <UserListItem
+                key={user._id}
+                user={user}
+                setUsers={setUsers}
+                searchQuery={searchQuery}
+              />
+            ))}
+          </List>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "16px",
+            }}
+          >
+            <Pagination
+              count={Math.ceil(users.length / ITEMS_PER_PAGE)} // Calculate total number of pages
+              page={currentPage}
+              onChange={handlePageChange}
+            />
+          </div>
+        </>
+      ) : (
+        <p>No users found!</p>
+      )}
     </div>
   );
 };

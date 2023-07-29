@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   Box,
@@ -11,36 +11,40 @@ import {
 import { useStyles } from "./styles";
 import { AddUserModalProps, User } from "../../utils/interfaces";
 import { getAllUsers, saveUser } from "../../services/userService";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { initialState } from "../../utils/constants";
 
-const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
+const AddUserModal: React.FC<AddUserModalProps> = ({
+  open,
+  onClose,
+  setUsers,
+  searchQuery,
+}) => {
   const classes = useStyles();
 
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phoneNumbers, setPhoneNumbers] = useState<string>("");
+  // User state
+  const [user, setUser] = useState<User>(initialState);
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
+  // Method that populate values for user from input fields
+  const handleChange = (field: keyof User, value: string) => {
+    setUser((prevUser) => ({ ...prevUser, [field]: value }));
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePhoneNumbersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumbers(e.target.value);
-  };
-
+  //Save new user method
   const handleSave = async () => {
-    const newUser: User = {
-      name,
-      email,
-      phoneNumbers,
-    };
-    await saveUser(newUser);
-    const users = await getAllUsers();
-    console.log(users);
-    onClose();
+    try {
+      await saveUser(user);
+      const users = await getAllUsers(searchQuery);
+      setUsers(users);
+      setUser(initialState);
+      onClose();
+    } catch (error: any) {
+      setUser(initialState);
+      toast.error(error.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
 
   return (
@@ -53,8 +57,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
               fullWidth
               type="text"
               label="Name"
-              value={name}
-              onChange={handleNameChange}
+              value={user.name}
+              onChange={(e) => handleChange("name", e.target.value)}
             />
           </Box>
           <Box className={classes.inputBox}>
@@ -62,22 +66,28 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
               fullWidth
               type="email"
               label="Email"
-              value={email}
-              onChange={handleEmailChange}
+              value={user.email}
+              onChange={(e) => handleChange("email", e.target.value)}
             />
           </Box>
           <Box className={classes.inputBox}>
             <TextField
               fullWidth
               type="text"
-              label="PhoneNumbers"
-              value={phoneNumbers}
-              onChange={handlePhoneNumbersChange}
+              label="PhoneNumber"
+              value={user.phoneNumber}
+              onChange={(e) => handleChange("phoneNumber", e.target.value)}
             />
           </Box>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button onClick={onClose} color="secondary">
+          <Button
+            onClick={() => {
+              onClose();
+              setUser(initialState);
+            }}
+            color="secondary"
+          >
             Cancel
           </Button>
           <Button onClick={handleSave} color="primary">
@@ -85,6 +95,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ open, onClose }) => {
           </Button>
         </DialogActions>
       </div>
+      <ToastContainer autoClose={3000} />
     </Dialog>
   );
 };

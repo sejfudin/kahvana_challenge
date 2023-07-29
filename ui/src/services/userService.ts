@@ -1,38 +1,59 @@
-import { User } from "../utils/interfaces";
+import { BASE_URL } from "../utils/constants";
+import { SearchQuery, User } from "../utils/interfaces";
 import axios from "axios";
 
-export const getAllUsers = async () => {
+// Get all users or search users by name, email or phone numbers
+export const getAllUsers = async (query: SearchQuery) => {
   try {
-    const { data } = await axios.get<User[]>("http://localhost:4000/users/");
+    const queryParams = new URLSearchParams();
+
+    if (query.name) {
+      queryParams.append("name", query.name);
+    }
+
+    if (query.email) {
+      queryParams.append("email", query.email);
+    }
+
+    if (query.phoneNumber) {
+      queryParams.append("phoneNumber", query.phoneNumber);
+    }
+
+    const queryString = queryParams.toString();
+
+    const { data } = await axios.get<User[]>(`${BASE_URL}?${queryString}`);
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
 };
 
+//Save user
 export const saveUser = async (newUser: User) => {
   try {
-    const { data } = await axios.post<User>("http://localhost:4000/users/", newUser);
+    const { data } = await axios.post<User>(BASE_URL, newUser);
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
-}
+};
 
-export const updateUser = async (id:string, newData: User) => {
+// Update user
+export const updateUser = async (id: string, newData: User) => {
   try {
-    const { data } = await axios.put<User>(`http://localhost:4000/users/${id}`, newData);
+    const { data } = await axios.put<User>(`${BASE_URL}${id}`, newData);
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
-}
+};
 
-export const deleteUser = async (id:string) => {
+// Delete user
+export const deleteUser = async (id: string) => {
   try {
-    const { data } = await axios.delete<Boolean>(`http://localhost:4000/users/${id}`);
+    const { data } = await axios.delete<Boolean>(`${BASE_URL}${id}`);
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
-}
+};

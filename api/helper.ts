@@ -1,15 +1,16 @@
 import { arrayWithNames, arrayWithPhoneNumbers } from "./data/arrays";
-import { User } from "./utils/interfaces";
+import { CombinedUser, UserWithPhoneAsArray } from "./utils/interfaces";
 
 export const combineArrays = (
-  arr1: User[],
+  arr1: UserWithPhoneAsArray[],
   arr2: { email: string; name: string }[]
-): User[] => {
-  const resultMap = new Map<string, User>();
+): CombinedUser[] => {
+  const resultMap = new Map<string, CombinedUser>();
 
   // Insert data from arrayWithPhoneNumbers into the map
   for (const item of arr1) {
-    resultMap.set(item.email, { ...item });
+    const phoneNumber = item.phoneNumbers[0]?.value ?? ""; // Get the phone number or set to an empty string
+    resultMap.set(item.email, { ...item, name: "", phoneNumber });
   }
 
   // Merge data from arrayWithNames into the map
@@ -21,16 +22,18 @@ export const combineArrays = (
       resultMap.set(item.email, {
         email: item.email,
         name: item.name,
-        phoneNumbers: [],
+        phoneNumber: "",
       });
     }
   }
 
   // Convert the map values back to an array
-  return Array.from(resultMap.values());
+  const combinedArray: CombinedUser[] = Array.from(resultMap.values());
+
+  return combinedArray;
 };
 
-export const combinedArray: User[] = combineArrays(
+export const combinedArray: CombinedUser[] = combineArrays(
   arrayWithPhoneNumbers,
   arrayWithNames
 );
