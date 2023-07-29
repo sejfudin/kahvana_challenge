@@ -9,25 +9,55 @@ import { Container } from "@mui/material";
 import AddUserModal from "../UserModal/AddUserModal";
 import { HeaderProps } from "../../utils/interfaces";
 
-const Header: React.FC<HeaderProps> = ({ handleSearchChange, searchQuery, setUsers }) => {
+const Header: React.FC<HeaderProps> = ({
+  handleSearchChange,
+  searchQuery,
+  setUsers,
+}) => {
   const classes = useStyles();
 
-  const [isOpen, setIsOpen] = useState(false);
+  // Open or close add user modal
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  // Method that open add user modal
   const handleAddUser = () => {
     setIsOpen(true);
   };
 
   return (
     <Container maxWidth="md">
-      <AddUserModal open={isOpen} onClose={() => setIsOpen(false)} setUsers={setUsers}/>
+      <AddUserModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        setUsers={setUsers}
+        searchQuery={searchQuery}
+      />
       <AppBar color="inherit" elevation={2}>
         <Toolbar>
           <Box>
             <InputBase
-              placeholder="Search users..."
+              placeholder="Search by name"
               inputProps={{ "aria-label": "search" }}
-              value={searchQuery}
+              name="name"
+              value={searchQuery.name}
+              onChange={handleSearchChange}
+            />
+          </Box>
+          <Box>
+            <InputBase
+              placeholder="Search by email"
+              inputProps={{ "aria-label": "search" }}
+              name="email"
+              value={searchQuery.email}
+              onChange={handleSearchChange}
+            />
+          </Box>
+          <Box>
+            <InputBase
+              placeholder="Search by phone"
+              inputProps={{ "aria-label": "search" }}
+              name="phoneNumber"
+              value={searchQuery.phoneNumber}
               onChange={handleSearchChange}
             />
           </Box>

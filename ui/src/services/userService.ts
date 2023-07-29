@@ -1,37 +1,34 @@
 import { BASE_URL } from "../utils/constants";
-import { CustomError, User } from "../utils/interfaces";
+import { SearchQuery, User } from "../utils/interfaces";
 import axios from "axios";
 
-export const getAllUsers = async (
-  query?: string,
-  email?: string,
-  phoneNumber?: string
-) => {
+// Get all users or search users by name, email or phone numbers
+export const getAllUsers = async (query: SearchQuery) => {
   try {
     const queryParams = new URLSearchParams();
 
-    if (query) {
-      queryParams.append("query", query);
+    if (query.name) {
+      queryParams.append("name", query.name);
     }
 
-    if (email) {
-      queryParams.append("email", email);
+    if (query.email) {
+      queryParams.append("email", query.email);
     }
 
-    if (phoneNumber) {
-      queryParams.append("phoneNumber", phoneNumber);
+    if (query.phoneNumber) {
+      queryParams.append("phoneNumber", query.phoneNumber);
     }
 
     const queryString = queryParams.toString();
-    const { data } = await axios.get<User[]>(
-      `${BASE_URL}?${queryString}`
-    );
+
+    const { data } = await axios.get<User[]>(`${BASE_URL}?${queryString}`);
     return data;
   } catch (error: any) {
     throw new Error(error.response.data.message);
   }
 };
 
+//Save user
 export const saveUser = async (newUser: User) => {
   try {
     const { data } = await axios.post<User>(BASE_URL, newUser);
@@ -41,23 +38,20 @@ export const saveUser = async (newUser: User) => {
   }
 };
 
+// Update user
 export const updateUser = async (id: string, newData: User) => {
   try {
-    const { data } = await axios.put<User>(
-      `${BASE_URL}${id}`,
-      newData
-    );
+    const { data } = await axios.put<User>(`${BASE_URL}${id}`, newData);
     return data;
   } catch (error: any) {
     throw new Error(error.response.data.message);
   }
 };
 
+// Delete user
 export const deleteUser = async (id: string) => {
   try {
-    const { data } = await axios.delete<Boolean>(
-      `${BASE_URL}${id}`
-    );
+    const { data } = await axios.delete<Boolean>(`${BASE_URL}${id}`);
     return data;
   } catch (error: any) {
     throw new Error(error.response.data.message);

@@ -1,4 +1,6 @@
-export const arrayWithPhoneNumbers = [
+import { UserWithPhoneAsArray} from "../utils/interfaces";
+
+export const arrayWithPhoneNumbers: UserWithPhoneAsArray[] = [
     {
       email: "marina@kahvana.com",
       phoneNumbers: [
