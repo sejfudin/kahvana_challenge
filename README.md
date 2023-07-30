@@ -29,12 +29,12 @@ Follow the steps below to set up and run the application:
 
 ### Database seed
 
-1. Navigate to the `api` folder and run: npm run seed
+1. Navigate to the `api` folder and run: `npm run seed`
 
 ### Running the Application
 
-1. Navigate to the `api` folder and install dependencies: npm install
-2. Navigate to the `ui` folder and install dependencies: npm install
+1. Navigate to the `api` folder and install dependencies: `npm install`
+2. Navigate to the `ui` folder and install dependencies: `npm install`
 3. Create `.env` file in api folder. You can refer to the `env.example` file for the required variables.
 4. Start the API server:
    -Navigate to api folder and run `npm start`
