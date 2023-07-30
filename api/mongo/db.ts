@@ -2,7 +2,7 @@ import { connect } from "mongoose";
 
 const mongoUri =
   process.env.MONGO_URI ||
-  "mongodb+srv://sejfudin:sejfudin_@cluster0.wlvcdi9.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb://mongo_username:mongo_password@localhost:27017/mydatabase";
 const connectDB = async (): Promise<void> => {
   try {
     await connect(mongoUri);
